@@ -342,6 +342,71 @@ public class MyMath {
         return output;
     }
 
+    public static int[][] newArrowHead(double slope, int fx, int ix ,int fy, int iy) {
+        //    \quad-4/
+        //     \    /
+        //      \  /
+        //quad-3 \/ quad-1
+        //       /\
+        //      /  \     
+        //     /    \
+        //    /quad-2\    
+        // [n][0] = x  [n][1] = y
+        int[][] output = new int[2][2];
+        if (slope == 1 || slope == -1) {
+            if (fx > ix) {
+                if (fy < iy) { // (+x -y)
+                    output[0][0] = fx-5;
+                    output[0][1] = fy;
+                    output[1][0] = fx;
+                    output[1][1] = fy+5;
+                } else { // (+x +y) done
+                    output[0][0] = fx;
+                    output[0][1] = fy-5;
+                    output[1][0] = fx-5;
+                    output[1][1] = fy;
+                }
+            } else {
+                if (fy < iy) { // (-x -y) done
+                    output[0][0] = fx+5;
+                    output[0][1] = fy;
+                    output[1][0] = fx;
+                    output[1][1] = fy+5;
+                } else { // (-x +y)
+                    output[0][0] = fx;
+                    output[0][1] = fy-5;
+                    output[1][0] = fx+5;
+                    output[1][1] = fy;
+                }
+            }
+        } else if (-1 < slope && slope < 1) {
+            if (fx > ix) {  // quad-1
+                output[0][0] = fx-5;
+                output[0][1] = fy-5;
+                output[1][0] = fx-5;
+                output[1][1] = fy+5;
+            } else {  // quad-3
+                output[0][0] = fx+5;
+                output[0][1] = fy-5;
+                output[1][0] = fx+5;
+                output[1][1] = fy+5;
+            }
+        } else if ((-1 > slope && Math.round(slope) != -1.0) || slope < 1) {
+            if (iy > fy) { // quad-4
+                output[0][0] = fx-5;
+                output[0][1] = fy+5;
+                output[1][0] = fx+5;
+                output[1][1] = fy+5;
+            } else {  // quad-2
+                output[0][0] = fx-5;
+                output[0][1] = fy-5;
+                output[1][0] = fx+5;
+                output[1][1] = fy-5;
+            }
+        }
+        return output;
+    }
+
     public static int numberGuess(int min, int max, int guessNum) {
         int guessingNum = (min+max) / 2;
         int count = 1;
