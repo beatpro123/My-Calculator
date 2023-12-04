@@ -14,7 +14,8 @@ public class CalculatorUI {
         System.out.print("\n\033[H\033[2J");
         System.out.flush();
         //userInterface();
-        DrawFBD.drawFBD();
+        Physics.uiFBDS();
+        //DrawFBD.drawFBD();
     }
 
     public static void userInterface() {
