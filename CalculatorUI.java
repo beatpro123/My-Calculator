@@ -6,7 +6,7 @@ public class CalculatorUI {
     // add test cases here: 
     // public static double[] dividen = {1.0, 0.0, -4.0}; 
     // public static double[] devisor = {1.0, -5.0};
-    // public static
+     public static double[][] testVector = {{98.1, 90}, {98.1, 270}, {100, 0}} ;
     // public static
     // public static
     // public static
@@ -14,8 +14,9 @@ public class CalculatorUI {
         System.out.print("\n\033[H\033[2J");
         System.out.flush();
         //userInterface();
-        Physics.uiFBDS();
+        //Physics.uiFBDS();
         //DrawFBD.drawFBD();
+        System.out.println("X-Acceleration = " + MyMath.solveForAcceleration(testVector));
     }
 
     public static void userInterface() {

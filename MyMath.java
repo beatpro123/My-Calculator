@@ -3,6 +3,7 @@ import java.lang.Math;
 public class MyMath {
 
     public static final double GRAVITY = -9.81;
+    public static final double INFINITY = Double.POSITIVE_INFINITY;
 
     public static boolean yesnoCheck(String input) {
         if (input.equals("y") || input.equals("yes")) {
@@ -11,7 +12,7 @@ public class MyMath {
         return false;
     }
 
-    public static double randomNum( double min, double max) {
+    public static double randomNum(double min, double max) {
         return min + Math.random() * (max - min);
     }
 
@@ -75,7 +76,7 @@ public class MyMath {
         int count = degree;
         double[] placeHolder = new double[count];
         for (int j = 0; j < realRoot.length; j++) {
-            test = new double[count-1];
+            test = new double[count - 1];
             if (count == degree) {
                 for (int i = 0; i < test.length; i++) {
                     if (i == 0) {
@@ -93,12 +94,12 @@ public class MyMath {
                         }
                     }
                 }
-            } else  if (count > 3) {
+            } else if (count > 3) {
                 for (int i = 0; i < test.length; i++) {
                     if (i == 0) {
                         test[0] = placeHolder[0];
                     } else {
-                    test[i] = (realRoot[j] * test[i - 1]) + placeHolder[i];
+                        test[i] = (realRoot[j] * test[i - 1]) + placeHolder[i];
                     }
                     if (test.length == 3 && i == test.length - 1) {
                         for (int r = 0; r < test.length; r++) {
@@ -201,7 +202,7 @@ public class MyMath {
         }
         return false;
     }
-    
+
     public static double[] findFactor(double[] realInput, int degree) {
         int numPossibleRoots = 0;
         int rootCount = 0;
@@ -342,94 +343,197 @@ public class MyMath {
         return output;
     }
 
-    public static int[][] newArrowHead(double slope, int fx, int ix ,int fy, int iy) {
-        //    \quad-4/
-        //     \    /
-        //      \  /
-        //quad-3 \/ quad-1
-        //       /\
-        //      /  \     
-        //     /    \
-        //    /quad-2\    
-        // [n][0] = x  [n][1] = y
+    public static int[][] newArrowHead(double slope, int fx, int ix, int fy, int iy) {
+        //     \quad 4/
+        //      \    /
+        //       \  /
+        // quad 3 \/ quad 1
+        //        /\
+        //       /  \
+        //      /    \
+        //     /quad 2\
+        // [n][0] = x, [n][1] = y
+        if (slope == INFINITY) {
+            slope = 0;
+        }
         int[][] output = new int[2][2];
         if (slope == 1 || slope == -1) {
             if (fx > ix) {
                 if (fy < iy) { // (+x -y)
-                    output[0][0] = fx-5;
+                    output[0][0] = fx - 5;
                     output[0][1] = fy;
                     output[1][0] = fx;
-                    output[1][1] = fy+5;
+                    output[1][1] = fy + 5;
                 } else { // (+x +y) done
                     output[0][0] = fx;
-                    output[0][1] = fy-5;
-                    output[1][0] = fx-5;
+                    output[0][1] = fy - 5;
+                    output[1][0] = fx - 5;
                     output[1][1] = fy;
                 }
             } else {
                 if (fy < iy) { // (-x -y) done
-                    output[0][0] = fx+5;
+                    output[0][0] = fx + 5;
                     output[0][1] = fy;
                     output[1][0] = fx;
-                    output[1][1] = fy+5;
+                    output[1][1] = fy + 5;
                 } else { // (-x +y)
                     output[0][0] = fx;
-                    output[0][1] = fy-5;
-                    output[1][0] = fx+5;
+                    output[0][1] = fy - 5;
+                    output[1][0] = fx + 5;
                     output[1][1] = fy;
                 }
             }
-        } else if (-1 < slope && slope < 1) {
-            if (fx > ix) {  // quad-1
-                output[0][0] = fx-5;
-                output[0][1] = fy-5;
-                output[1][0] = fx-5;
-                output[1][1] = fy+5;
-            } else {  // quad-3
-                output[0][0] = fx+5;
-                output[0][1] = fy-5;
-                output[1][0] = fx+5;
-                output[1][1] = fy+5;
+        } else if (-1 > slope || slope < 1 || slope == 0.0) {
+            if (iy > fy) { // quad 4
+                output[0][0] = fx - 5;
+                output[0][1] = fy + 5;
+                output[1][0] = fx + 5;
+                output[1][1] = fy + 5;
+            } else { // quad 2
+                output[0][0] = fx - 5;
+                output[0][1] = fy - 5;
+                output[1][0] = fx + 5;
+                output[1][1] = fy - 5;
             }
-        } else if ((-1 > slope && Math.round(slope) != -1.0) || slope < 1) {
-            if (iy > fy) { // quad-4
-                output[0][0] = fx-5;
-                output[0][1] = fy+5;
-                output[1][0] = fx+5;
-                output[1][1] = fy+5;
-            } else {  // quad-2
-                output[0][0] = fx-5;
-                output[0][1] = fy-5;
-                output[1][0] = fx+5;
-                output[1][1] = fy-5;
+        } else if (-1 < slope && slope < 1) {
+            if (fx > ix) { // quad 1
+                output[0][0] = fx - 5;
+                output[0][1] = fy - 5;
+                output[1][0] = fx - 5;
+                output[1][1] = fy + 5;
+            } else { // quad 3
+                output[0][0] = fx + 5;
+                output[0][1] = fy - 5;
+                output[1][0] = fx + 5;
+                output[1][1] = fy + 5;
             }
         }
         return output;
     }
 
     public static int numberGuess(int min, int max, int guessNum) {
-        int guessingNum = (min+max) / 2;
+        int guessingNum = (min + max) / 2;
         int count = 1;
-        for ( int i = 0; i < max; i++) {
-            if (guessingNum == guessNum){
-                return i+1;
-            }else if (guessingNum < guessNum) {
+        for (int i = 0; i < max; i++) {
+            if (guessingNum == guessNum) {
+                return i + 1;
+            } else if (guessingNum < guessNum) {
                 if (count % 2 == 0) {
-                    guessingNum += (int)Math.round((double)(guessingNum / 2));
+                    guessingNum += (int) Math.round((double) (guessingNum / 2));
                 } else {
                     guessingNum += guessingNum / 2;
                 }
             } else if (guessingNum > guessNum) {
                 if (count % 2 == 0) {
-                    guessingNum -= (int)Math.round((double)(guessingNum / 2));
+                    guessingNum -= (int) Math.round((double) (guessingNum / 2));
                 } else {
                     guessingNum -= guessingNum / 2;
                 }
-            }        
-        } 
+            }
+        }
         return -1;
     }
 
-    
+    public static int[] solveForFBDs(int vectorCount) {
+        int[] output = new int[0];
+        return output;
+    }
+
+    public static int[] slopeANDmagTOvector(double[][] myVectors) {
+        int[] output = new int[0];
+        return output;
+    }
+
+    public static double[][] getSumOfFX(double[][] myVectors) {
+        int xcount = 0;
+        int[] indexOFxs = new int[myVectors.length];
+        int ycount = 0;
+        for (int i = 0; i < myVectors.length; i++) {
+            if ((int) myVectors[i][1] == 0 || (int) myVectors[i][1] == 180.0) {
+                indexOFxs[xcount] = i;
+                xcount++;
+            }
+        }
+        for (int i = 0; i < myVectors.length; i++) {
+            if ((int)myVectors[i][1] == 90.0 || (int)myVectors[i][1] == 270.0) {
+                ycount++;
+            }
+        }
+        if (xcount + ycount == myVectors.length) {
+            double[][] output = new double[xcount][2];
+            for (int i = 0; i < xcount; i++) {
+                output[i][0] = myVectors[indexOFxs[i]][0];
+                output[i][1] = myVectors[indexOFxs[i]][1];
+            }
+            return output;
+        } else {
+            System.out.println("FAIL 1");
+            double[][] output = new double[2][0];
+            return output;
+        }
+    }
+    public static double[][] getSumOfFY(double[][] myVectors) {
+        int xcount = 0;
+        int[] indexOFys = new int[myVectors.length];
+        int ycount = 0;
+        for (int i = 0; i < myVectors.length; i++) {
+            if (Math.round(Math.abs(myVectors[i][1])) == 0 || Math.round(Math.abs(myVectors[i][1])) == 180) {
+                xcount++;
+            }
+        }
+        for (int i = 0; i < myVectors.length; i++) {
+            if (Math.round(Math.abs(myVectors[i][1])) == 90 || Math.round(Math.abs(myVectors[i][1])) == 270) {
+                indexOFys[xcount] = i;
+                ycount++;
+            }
+        }
+        if (xcount + ycount == myVectors.length) {
+            double[][] output = new double[ycount][2];
+            for (int i = 0; i < ycount; i++) {
+                output[i][0] = myVectors[indexOFys[i]][0];
+                output[i][1] = myVectors[indexOFys[i]][1];
+            }
+            return output;
+        } else {
+            System.out.println("FAIL 2");
+            double[][] output = new double[2][0];
+            return output;
+        }
+    }
+
+    public static String solveForAcceleration(double[][] myVectors) {
+        String output = "";
+        double[][] xVectors = getSumOfFX(myVectors);
+        double[][] yVectors = getSumOfFY(myVectors);
+        // x acceleration 
+        double[][] realXVectorVal = new double[xVectors.length][2];
+        for(int i = 0; i < xVectors.length; i++) {
+            if (xVectors[i][1] == Math.toRadians(180.0)) {
+                realXVectorVal[i][0] = (-1 * xVectors[i][0]);
+            }
+        } 
+        double xAcceleration = 0;
+        for (int i = 0; i < realXVectorVal.length; i++) {
+            xAcceleration += realXVectorVal[i][0];
+        }
+        output += xAcceleration + ", Y-Acceleration = ";
+        // y acceleraion 
+        double[][] realYVectorVal = new double[yVectors.length][2];
+        for(int i = 0; i < yVectors.length; i++) {
+            if (yVectors[i][1] == Math.toRadians(270.0)) {
+                realYVectorVal[i][0] = -1*yVectors[i][0];
+            } else {
+                realYVectorVal[i][0] =  yVectors[i][0];
+            }
+        } 
+        double yAcceleration = 0;
+        for (int i = 0; i < realYVectorVal.length; i++) {
+            yAcceleration += realYVectorVal[i][0];
+        }
+        output += yAcceleration + ", total acceleration = ";
+        output += round(cultMath(xAcceleration, yAcceleration), 1) + ", with an angle of " + round(Math.toDegrees(Math.atan(yAcceleration/xAcceleration)), 1); 
+
+        return output;
+    }
 
 }

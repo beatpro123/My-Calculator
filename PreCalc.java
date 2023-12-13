@@ -32,8 +32,8 @@ public class PreCalc {
     }
 
     public static void calcCheck() {
-        System.out.println("\nwould you like to use it again type (yes)");
-        System.out.println("if you want to return to the pre calculus selection \"q\"");
+        System.out.println("\nwould you like to use it again type \"yes\"");
+        System.out.println("if you want to return to the pre calculus selection \"q\" or \"quit\"");
         System.out.println("if you want to return home type \"home\"");
         String userInput = input.next();
         if (userInput.equals("home")) {
@@ -41,7 +41,7 @@ public class PreCalc {
             System.out.println();
             CalculatorUI.userInterface();
         }
-        if (userInput.equals("q")) {
+        if (userInput.equals("q") || userInput.equals("quits")) {
             userNum *= 0;
             System.out.println();
             preCalcInterface();

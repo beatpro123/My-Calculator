@@ -2,8 +2,12 @@ import java.awt.Canvas;
 import java.awt.Graphics;
 import javax.swing.JFrame;
 import java.lang.Math;
+import java.util.Scanner;
+
 public class DrawFBD extends Canvas{
+    public static final Scanner input = new Scanner(System.in);
     public static final int SIZE = 600;
+    public static final double GRAVITY = MyMath.GRAVITY;
     public static void drawFBD() {
         JFrame frame = new JFrame("FBD");
         Canvas canvas = new DrawFBD();
@@ -11,7 +15,6 @@ public class DrawFBD extends Canvas{
         frame.add(canvas);
         frame.pack();
         frame.setVisible(true);
-
     }
 
     // Leaving this as a example to not over complicate things
@@ -180,29 +183,41 @@ public class DrawFBD extends Canvas{
 
     public void paint(Graphics g) {
         int ix = (SIZE/2), iy = (SIZE/2);
-        int[] fys = {100, 500};
-        int[] fxs = {500, 200};
-        int arrowCount = fxs.length;
-        g.fillOval((SIZE/2) - 5, (SIZE/2) - 5, 10, 10);
-        for (int i = 0; i < arrowCount; i++) {
-            int fy = fys[i];
-            int fx = fxs[i];
-            double slope = (double)(fy-iy) / (double) (fx-ix);
-            g.drawLine(ix, iy, fx, fy);
-            // arrow directions
-            int[][] heads = MyMath.newArrowHead(slope, fx, ix, fy, iy);
-            System.out.println("arrow " + (i+1) + " with a slope of " + slope) ;
-            for(int j = 0; j < 2; j++) {
-                for (int l =0; l < 2; l++) {
-                    System.out.println(j + " " + l + " " + heads[j][l]); 
-                }
-            }
-            g.drawLine(fx, fy, heads[0][0], heads[0][1]);
-            g.drawLine(fx, fy, heads[1][0], heads[1][1]);
-            if (i+1 != arrowCount) {
-                System.out.println("-------");
-            }
+        int count = 0;
+        g.fillOval((ix-5), (iy-5), 10, 10);
+        System.out.println("What is the mass of the object? (Kg)");
+        double mass = input.nextDouble();
+        int fyg = iy + (int) Math.round(mass*-GRAVITY);
+        g.drawLine(ix, iy, ix, fyg);
+        int[][] gravityHeads = MyMath.newArrowHead(0, ix, ix, fyg, iy);
+        g.drawLine(ix, fyg, gravityHeads[0][0], gravityHeads[0][1]);
+        g.drawLine(ix, fyg, gravityHeads[1][0], gravityHeads[1][1]);
+        System.out.println("How many vectors? (not incluging gravity)");
+        int numOfVectors = input.nextInt();
+        double[][] vectorValues = new double[numOfVectors+1][2];
+        vectorValues[0][0] = fyg - iy;
+        vectorValues[0][1] = Math.toRadians(90.0);
+        while (count != numOfVectors) {
+            System.out.println("vector " + (count+1) + ":");
+            System.out.println("what is the magnitude?");
+            double magnitude = input.nextDouble();
+            System.out.println("what is the angle?");
+            double angle = Math.toRadians(input.nextInt());
+            int xpos = ix + (int) Math.round(magnitude*Math.cos(angle)); 
+            System.out.println("x = " + xpos); 
+            int ypos = iy + (int) Math.round(magnitude*Math.sin(angle));
+            System.out.println("y = " + ypos);
+            double slope = (double)(iy-ypos) /(double) (ix-xpos);
+            g.drawLine(ix, iy, xpos, ypos);
+            int[][] heads = MyMath.newArrowHead(slope, xpos, ix, ypos, iy);
+            g.drawLine(xpos, ypos, heads[0][0], heads[0][1]);
+            g.drawLine(xpos, ypos, heads[1][0], heads[1][1]);
+            count++;
+            int magOrDeg = 0;
+            vectorValues[count][magOrDeg] = magnitude;
+            magOrDeg++;
+            vectorValues[count][magOrDeg] = angle;            
         }
-        // Line: (pos1 x, pos1 y, pos2 x, pos2 y)
+        System.out.println("X-Acceleration = " + MyMath.solveForAcceleration(vectorValues));
     }
 }

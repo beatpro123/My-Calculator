@@ -6,10 +6,12 @@
 #            ex: (x+1)(x-3) = x^2-2x-3 (can be expandable)
 #        3. create a program to calculate and draw FBD's (I want this to be the best designed function)
 #            a) arrows DONE
-#               draws arrow and labels them based on the type of force (also change maginitude bassed on #N)
+#               Draws arrow and labels them based on the type of force (also scale maginitude bassed on #N)
+#                   can do this by making gravity half the canvis and divide mag by that number 
+#               Make it show the value and type of the vector. 
 #            b) UI for FBD's 
-#                should be easy (ask for weight of object and all the different forces)
-#                when asking for what it is solving for it should git rid of the things that cant be solved #                together
+#               make it so that you can just add and take away vectors in real time and it changes        
+#               acceleration in real time 
 #            c) Math for the FBD's 
 #                calculates the acceleration of the object if needed
 #                calculates the force on a certen vector 
@@ -21,7 +23,7 @@
 #                   lable the vectors
 #                   show the incline plane angles 
 #        4. draw the projectile motion path and lable the key points                       
-#        
+#               
 #
 #
 #
