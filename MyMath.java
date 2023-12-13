@@ -383,7 +383,7 @@ public class MyMath {
                     output[1][1] = fy;
                 }
             }
-        } else if (-1 > slope || slope < 1 || slope == 0.0) {
+        } else if (-1 > slope || slope < 1 || (slope == 0.0 && ix == fx )) {
             if (iy > fy) { // quad 4
                 output[0][0] = fx - 5;
                 output[0][1] = fy + 5;
@@ -395,7 +395,7 @@ public class MyMath {
                 output[1][0] = fx + 5;
                 output[1][1] = fy - 5;
             }
-        } else if (-1 < slope && slope < 1) {
+        } else if (-1 < slope && slope < 1 || (slope == 0.0 && iy == fy) ) {
             if (fx > ix) { // quad 1
                 output[0][0] = fx - 5;
                 output[0][1] = fy - 5;
@@ -472,6 +472,7 @@ public class MyMath {
             return output;
         }
     }
+
     public static double[][] getSumOfFY(double[][] myVectors) {
         int xcount = 0;
         int[] indexOFys = new int[myVectors.length];
@@ -501,37 +502,41 @@ public class MyMath {
         }
     }
 
-    public static String solveForAcceleration(double[][] myVectors) {
-        String output = "";
+    public static String solveForAcceleration(double[][] myVectors, double mass) {
+        String output = "X-Acceleration = ";
         double[][] xVectors = getSumOfFX(myVectors);
         double[][] yVectors = getSumOfFY(myVectors);
         // x acceleration 
         double[][] realXVectorVal = new double[xVectors.length][2];
         for(int i = 0; i < xVectors.length; i++) {
-            if (xVectors[i][1] == Math.toRadians(180.0)) {
+            if (xVectors[i][1] == 180.0) {
                 realXVectorVal[i][0] = (-1 * xVectors[i][0]);
+            } else {
+                realXVectorVal[i][0] = xVectors[i][0];
             }
         } 
         double xAcceleration = 0;
         for (int i = 0; i < realXVectorVal.length; i++) {
             xAcceleration += realXVectorVal[i][0];
         }
-        output += xAcceleration + ", Y-Acceleration = ";
+        output += round((xAcceleration / mass), 1) + "M/S^2, Y-Acceleration = ";
         // y acceleraion 
         double[][] realYVectorVal = new double[yVectors.length][2];
         for(int i = 0; i < yVectors.length; i++) {
-            if (yVectors[i][1] == Math.toRadians(270.0)) {
-                realYVectorVal[i][0] = -1*yVectors[i][0];
+            if (yVectors[i][1] == 270.0) {
+                realYVectorVal[i][0] = (-1*yVectors[i][0]);
             } else {
-                realYVectorVal[i][0] =  yVectors[i][0];
+                realYVectorVal[i][0] = yVectors[i][0];
             }
         } 
         double yAcceleration = 0;
         for (int i = 0; i < realYVectorVal.length; i++) {
             yAcceleration += realYVectorVal[i][0];
         }
-        output += yAcceleration + ", total acceleration = ";
-        output += round(cultMath(xAcceleration, yAcceleration), 1) + ", with an angle of " + round(Math.toDegrees(Math.atan(yAcceleration/xAcceleration)), 1); 
+        yAcceleration = round(yAcceleration/mass, 1);
+        xAcceleration = round((xAcceleration / mass), 1);
+        output += Math.abs(yAcceleration) + " M/S^2, a = ";
+        output += round(cultMath(xAcceleration, yAcceleration), 1) + " M/S^2, at an angle of " + round(Math.toDegrees(Math.atan(yAcceleration/xAcceleration)), 1); 
 
         return output;
     }

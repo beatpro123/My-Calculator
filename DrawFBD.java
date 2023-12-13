@@ -181,7 +181,7 @@ public class DrawFBD extends Canvas{
         return output;
     }
 
-    public void paint(Graphics g) {
+    public void paint(Graphics g) { // TODO make the labels for the vctors 
         int ix = (SIZE/2), iy = (SIZE/2);
         int count = 0;
         g.fillOval((ix-5), (iy-5), 10, 10);
@@ -196,7 +196,7 @@ public class DrawFBD extends Canvas{
         int numOfVectors = input.nextInt();
         double[][] vectorValues = new double[numOfVectors+1][2];
         vectorValues[0][0] = fyg - iy;
-        vectorValues[0][1] = Math.toRadians(90.0);
+        vectorValues[0][1] = 90;
         while (count != numOfVectors) {
             System.out.println("vector " + (count+1) + ":");
             System.out.println("what is the magnitude?");
@@ -216,8 +216,8 @@ public class DrawFBD extends Canvas{
             int magOrDeg = 0;
             vectorValues[count][magOrDeg] = magnitude;
             magOrDeg++;
-            vectorValues[count][magOrDeg] = angle;            
+            vectorValues[count][magOrDeg] = Math.toDegrees(angle);            
         }
-        System.out.println("X-Acceleration = " + MyMath.solveForAcceleration(vectorValues));
+        System.out.println(MyMath.solveForAcceleration(vectorValues, mass));
     }
 }

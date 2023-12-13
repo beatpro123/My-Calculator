@@ -15,8 +15,8 @@ public class CalculatorUI {
         System.out.flush();
         //userInterface();
         //Physics.uiFBDS();
-        //DrawFBD.drawFBD();
-        System.out.println("X-Acceleration = " + MyMath.solveForAcceleration(testVector));
+        DrawFBD.drawFBD();
+        //System.out.println("X-Acceleration = " + MyMath.solveForAcceleration(testVector));
     }
 
     public static void userInterface() {
