@@ -1,4 +1,5 @@
 import java.util.Scanner;
+import java.util.Vector;
 
 public class CalculatorUI {
     public static final Scanner input = new Scanner(System.in);
@@ -6,8 +7,8 @@ public class CalculatorUI {
     // add test cases here: 
     // public static double[] dividen = {1.0, 0.0, -4.0}; 
     // public static double[] devisor = {1.0, -5.0};
-     public static double[][] testVector = {{98.1, 90}, {98.1, 270}, {100, 0}} ;
-    // public static
+     public static double[][] testVector = {{98.1, 90}, {50, 45}, {100, 0}, {200, 300}} ;
+    // public static 
     // public static
     // public static
     public static void main(String[] args) {
@@ -16,7 +17,6 @@ public class CalculatorUI {
         //userInterface();
         //Physics.uiFBDS();
         DrawFBD.drawFBD();
-        //System.out.println("X-Acceleration = " + MyMath.solveForAcceleration(testVector));
     }
 
     public static void userInterface() {

@@ -165,12 +165,10 @@ public class MyMath {
     public static double[] cleanArray(double[] arr, double removal) {
         double[] arr_new = new double[arr.length - 1];
         for (int i = 0, k = 0; i < arr.length; i++) {
-            // for (int j = 0; j < removal.length; j++) {
             if (arr[i] != removal) {
                 arr_new[k] = arr[i];
                 k++;
             }
-            // }
         }
         return arr_new;
     }
@@ -212,6 +210,7 @@ public class MyMath {
             return realInput;
         }
         double[] factorsOfFirst = getFactor(realInput[0]);
+        // finding x = 0 roots TODO make check for multiple
         if (realInput[realInput.length - 1] == 0) {
             realInput[realInput.length - 1] = roots[rootCount];
             input = removeTheElement(realInput, realInput.length - 1);
@@ -243,6 +242,7 @@ public class MyMath {
                 numPossibleRoots++;
             }
         }
+        // solving for 2 imaginary roots
         if ((degree - 1) - numPossibleRoots == 2) {
             double[] imagenaryFunction = factorOutRoot(input, roots, degree);
             Double a, b, c;
@@ -414,6 +414,7 @@ public class MyMath {
     public static int numberGuess(int min, int max, int guessNum) {
         int guessingNum = (min + max) / 2;
         int count = 1;
+        //bianary search
         for (int i = 0; i < max; i++) {
             if (guessingNum == guessNum) {
                 return i + 1;
@@ -434,76 +435,189 @@ public class MyMath {
         return -1;
     }
 
-    public static int[] solveForFBDs(int vectorCount) {
-        int[] output = new int[0];
-        return output;
-    }
-
-    public static int[] slopeANDmagTOvector(double[][] myVectors) {
-        int[] output = new int[0];
-        return output;
-    }
-
-    public static double[][] getSumOfFX(double[][] myVectors) {
+    public static double[][] getSumOfFX(Vector[] myVectors) {
         int xcount = 0;
-        int[] indexOFxs = new int[myVectors.length];
+        int testx = 0;
         int ycount = 0;
+        int testy = 0;
+        // determining what axis the vector belongs to 
         for (int i = 0; i < myVectors.length; i++) {
-            if ((int) myVectors[i][1] == 0 || (int) myVectors[i][1] == 180.0) {
-                indexOFxs[xcount] = i;
+            if ((int) Math.abs(myVectors[i].getAngle()) == 0 ||(int) Math.abs(myVectors[i].getAngle()) == 180.0) {
                 xcount++;
             }
         }
+        int[] indexOFxs = new int[xcount];
         for (int i = 0; i < myVectors.length; i++) {
-            if ((int)myVectors[i][1] == 90.0 || (int)myVectors[i][1] == 270.0) {
+            if ((int) Math.abs(myVectors[i].getAngle()) == 0 ||(int) Math.abs(myVectors[i].getAngle()) == 180.0) {
+                indexOFxs[testx] = i;
+                testx++;
+            }
+        }
+        for (int i = 0; i < myVectors.length; i++) {
+            if ((int)Math.abs(myVectors[i].getAngle()) == 90.0 || (int)Math.abs(myVectors[i].getAngle()) == 270.0) {
                 ycount++;
+            }
+        }
+        int[] indexOFys = new int[ycount];
+        for (int i = 0; i < myVectors.length; i++) {
+            if ((int)Math.abs(myVectors[i].getAngle()) == 90.0 || (int)Math.abs(myVectors[i].getAngle()) == 270.0) {
+                indexOFys[testy] = i;
+                testy++;
             }
         }
         if (xcount + ycount == myVectors.length) {
+            // saving the data of the if all the vectors are ideal
             double[][] output = new double[xcount][2];
             for (int i = 0; i < xcount; i++) {
-                output[i][0] = myVectors[indexOFxs[i]][0];
-                output[i][1] = myVectors[indexOFxs[i]][1];
+                output[i][0] = myVectors[indexOFxs[i]].getMagnitude();
+                output[i][1] = myVectors[indexOFxs[i]].getAngle();
             }
             return output;
         } else {
-            System.out.println("FAIL 1");
-            double[][] output = new double[2][0];
+            int numOfDividedVectors = myVectors.length - (xcount + ycount);
+            int[] specialIndex = new int[numOfDividedVectors];
+            int count = 0;
+            int count2 = 0; 
+            int count4 = 0; 
+            for (int i = 0; i < myVectors.length; i++) {
+                // getting the indexes of the vectors that need to be parced 
+                if (indexOFxs[count] == i) {
+                    if (count+1 != indexOFxs.length) {
+                        count++;
+                    }
+                } else if (indexOFys[count4] == i) {
+                    if (count4+1 != indexOFys.length) {
+                        count4++;  
+                    }
+                } else {
+                    specialIndex[count2] = i;
+                    count2++;
+                    xcount++;
+                }
+            }
+            double[][] output = new double[xcount][2];
+            int count3 = 0;
+            for(int i = 0; i < xcount; i++) {
+                // gettint the vectors a degree of 0 or 180
+                if (i < indexOFxs.length) {
+                    output[i][0] = myVectors[indexOFxs[i]].getMagnitude();
+                    output[i][1] = myVectors[indexOFxs[i]].getAngle();
+                } else {
+                    // getting the angle of the trig triangle 
+                    double angle = 0;
+                    for(int j = 0; j < 4; j++) {
+                        if (myVectors[specialIndex[count3]].getAngle() > 0 && myVectors[specialIndex[count3]].getAngle() < 90 ) {
+                            angle = myVectors[specialIndex[count3]].getAngle();
+                        } else {
+                            angle = myVectors[specialIndex[count3]].getAngle() - 90;
+                        }
+                    } 
+                    // saving the data for the parced vector
+                    output[i][0] = Math.abs(round(myVectors[specialIndex[count3]].getMagnitude() * 
+                    Math.cos(Math.toRadians(angle)), 1));
+                    if ((myVectors[specialIndex[count3]].getAngle() > 270 && myVectors[specialIndex[count3]].getAngle() < 360) ||
+                        (myVectors[specialIndex[count3]].getAngle() > 0 && myVectors[specialIndex[count3]].getAngle() < 90)) {
+                        output[i][1] = 0;
+                    } else {
+                        output[i][1] = 180;
+                    }
+                count3++;                    
+                }
+            }
             return output;
         }
     }
 
-    public static double[][] getSumOfFY(double[][] myVectors) {
+    public static double[][] getSumOfFY(Vector[] myVectors) {
+        //  almost the same as the getSumOfFX() 
         int xcount = 0;
-        int[] indexOFys = new int[myVectors.length];
+        int testx = 0;
         int ycount = 0;
+        int testy = 0;
         for (int i = 0; i < myVectors.length; i++) {
-            if (Math.round(Math.abs(myVectors[i][1])) == 0 || Math.round(Math.abs(myVectors[i][1])) == 180) {
+            if ((int) Math.abs(myVectors[i].getAngle()) == 0 ||(int) Math.abs(myVectors[i].getAngle()) == 180.0) {
                 xcount++;
             }
         }
+        int[] indexOFxs = new int[xcount];
         for (int i = 0; i < myVectors.length; i++) {
-            if (Math.round(Math.abs(myVectors[i][1])) == 90 || Math.round(Math.abs(myVectors[i][1])) == 270) {
-                indexOFys[xcount] = i;
+            if ((int) Math.abs(myVectors[i].getAngle()) == 0 ||(int) Math.abs(myVectors[i].getAngle()) == 180.0) {
+                indexOFxs[testx] = i;
+                testx++;
+            }
+        }
+        for (int i = 0; i < myVectors.length; i++) {
+            if ((int)Math.abs(myVectors[i].getAngle()) == 90.0 || (int)Math.abs(myVectors[i].getAngle()) == 270.0) {
                 ycount++;
+            }
+        }
+        int[] indexOFys = new int[ycount];
+        for (int i = 0; i < myVectors.length; i++) {
+            if ((int)Math.abs(myVectors[i].getAngle()) == 90.0 || (int)Math.abs(myVectors[i].getAngle()) == 270.0) {
+                indexOFys[testy] = i;
+                testy++;
             }
         }
         if (xcount + ycount == myVectors.length) {
             double[][] output = new double[ycount][2];
             for (int i = 0; i < ycount; i++) {
-                output[i][0] = myVectors[indexOFys[i]][0];
-                output[i][1] = myVectors[indexOFys[i]][1];
+                output[i][0] = myVectors[indexOFys[i]].getMagnitude();
+                output[i][1] = myVectors[indexOFys[i]].getAngle();
             }
             return output;
         } else {
-            System.out.println("FAIL 2");
-            double[][] output = new double[2][0];
+            int numOfDividedVectors = myVectors.length - (xcount + ycount);
+            int[] specialIndex = new int[numOfDividedVectors];
+            int count = 0;
+            int count2 = 0; 
+            int count4 = 0; 
+            for (int i = 0; i < myVectors.length; i++) {
+                if (indexOFxs[count] == i) {
+                    if (count+1 != indexOFxs.length) {
+                        count++;
+                    }
+                } else if (indexOFys[count4] == i) {
+                    if (count4+1 != indexOFys.length) {
+                        count4++;  
+                    }
+                } else {
+                    specialIndex[count2] = i;
+                    count2++;
+                    ycount++;
+                }
+            }
+            double[][] output = new double[ycount][2];
+            int count3 = 0;
+            for(int i = 0; i < ycount; i++) {
+                if (i < indexOFys.length) {
+                    output[i][0] = myVectors[indexOFys[i]].getMagnitude();
+                    output[i][1] = myVectors[indexOFys[i]].getAngle();
+                } else {
+                    double angle = 0;
+                    for(int j = 0; j < 4; j++) {
+                        if (myVectors[specialIndex[count3]].getAngle() > 0 && myVectors[specialIndex[count3]].getAngle() < 90 ) {
+                            angle = myVectors[specialIndex[count3]].getAngle();
+                        } else {
+                            angle = myVectors[specialIndex[count3]].getAngle() - 90;
+                        }
+                    } 
+                    output[i][0] = Math.abs(round(myVectors[specialIndex[count3]].getMagnitude() * 
+                    Math.cos(Math.toRadians(angle)), 1));
+                    if ((myVectors[specialIndex[count3]].getAngle() > 270 && myVectors[specialIndex[count3]].getAngle() < 360) ||
+                        (myVectors[specialIndex[count3]].getAngle() > 0 && myVectors[specialIndex[count3]].getAngle() < 90)) {
+                        output[i][1] = 0;
+                    } else {
+                        output[i][1] = 180;
+                    }
+                count3++;                    
+                }
+            }
             return output;
         }
     }
 
-    public static String solveForAcceleration(double[][] myVectors, double mass) {
-        String output = "X-Acceleration = ";
+    public static double[] solveForAcceleration(Vector[] myVectors, double mass) {
+        double[] output = new double[4];
         double[][] xVectors = getSumOfFX(myVectors);
         double[][] yVectors = getSumOfFY(myVectors);
         // x acceleration 
@@ -519,11 +633,10 @@ public class MyMath {
         for (int i = 0; i < realXVectorVal.length; i++) {
             xAcceleration += realXVectorVal[i][0];
         }
-        output += round((xAcceleration / mass), 1) + "M/S^2, Y-Acceleration = ";
         // y acceleraion 
         double[][] realYVectorVal = new double[yVectors.length][2];
         for(int i = 0; i < yVectors.length; i++) {
-            if (yVectors[i][1] == 270.0) {
+            if (yVectors[i][1] == 90.0) {
                 realYVectorVal[i][0] = (-1*yVectors[i][0]);
             } else {
                 realYVectorVal[i][0] = yVectors[i][0];
@@ -535,10 +648,23 @@ public class MyMath {
         }
         yAcceleration = round(yAcceleration/mass, 1);
         xAcceleration = round((xAcceleration / mass), 1);
-        output += Math.abs(yAcceleration) + " M/S^2, a = ";
-        output += round(cultMath(xAcceleration, yAcceleration), 1) + " M/S^2, at an angle of " + round(Math.toDegrees(Math.atan(yAcceleration/xAcceleration)), 1); 
-
+        output[0] = xAcceleration;
+        output[1] = yAcceleration;
+        output[2] = round(cultMath(xAcceleration, yAcceleration), 1); // magnitude
+        output[3] = round(Math.toDegrees(Math.atan(Math.abs(yAcceleration)/Math.abs(xAcceleration))), 1); // angle
+        if (output[2] != 0) {
+            if (xAcceleration > 0 && yAcceleration < 0) {
+                return output;
+            } else if (xAcceleration > 0 && yAcceleration < 0) {
+                output[3] += 270;
+            } else if (xAcceleration < 0 && yAcceleration < 0) {
+                output[3] += 90;
+            } else {
+                output[3] += 180;
+            }
+        }
         return output;
     }
 
+    
 }
