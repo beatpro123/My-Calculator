@@ -8,21 +8,15 @@ public class Games {
         System.out.println("\nType the number of the game you want to play");
         System.out.println("(0) Return home");
         System.out.println("(1) Guess the number");
-        System.out.println("(2) Hang-man \"not implemented\"");
+        System.out.println("(2) Hang-man");
         userNum = input.nextInt();
         if (userNum < 0 || userNum > 2) {
             System.out.println("That is not a option or it is currently being worked on");
             gameUI();
         }
-        if (userNum == 0) {
-            CalculatorUI.userInterface();
-        }
-        if (userNum == 1) {
-            guessNumber();
-        }
-        if (userNum == 2) {
-            hangMan();
-        }
+        if (userNum == 0) CalculatorUI.userInterface();
+        if (userNum == 1) guessNumber();
+        if (userNum == 2) hangMan();
     }
 
     public static void gameCheck() {
@@ -31,20 +25,13 @@ public class Games {
         System.out.println("If you want to return home type \"home\"");
         String userInput = input.next();
         if (userInput.equals("yes")) {
-            if (userNum < 1 || userNum > 2) {
-                System.out.println("that is not a option yet");
-            }
-            if (userNum == 1) {
-                guessNumber();
-            }
-            if (userNum == 2) {
-                hangMan();
-            }
-        } else if (userInput.equals("q")) {
-            gameUI();
-        } else if (userInput.equals("home")) {
-            CalculatorUI.userInterface();
-        } else {
+            if (userNum < 1 || userNum > 2) System.out.println("that is not a option yet");
+            if (userNum == 1) guessNumber();
+            if (userNum == 2) hangMan();
+        } 
+        else if (userInput.equals("q")) gameUI();
+        else if (userInput.equals("home")) CalculatorUI.userInterface();
+        else {
             System.out.println("that is not a option try again");
             gameCheck();
         }
@@ -141,4 +128,6 @@ public class Games {
         System.out.println("Sorry you lost, better luck next time.");
         gameCheck();
     }
+
+
 }

@@ -1,47 +1,44 @@
 import java.lang.Math;
+import java.util.ArrayList;
+import java.util.Scanner;
 
 public class MyMath {
     public static final double GRAVITY = -9.81;
-    public static final double INFINITY = Double.POSITIVE_INFINITY;
+    public static final double G = siNote(6.67, -11);
+    public static final double INFINITY = Double.POSITIVE_INFINITY; 
+    public static final Scanner input = new Scanner(System.in);
+
+    // input sientific notaion gives number
+    public static double siNote(double x, int y) {
+        return x * pow(10, y);
+    }
     // checks if input = "yes" or "y"
-    public static boolean yesnoCheck(String input) {
-        if (input.equals("y") || input.equals("yes")) {
-            return true;
-        }
-        return false;
+    public static boolean yesnoCheck() {
+        System.out.println("y or yes");
+        String in = input.nextLine();
+        return in.equals("y") || in.equals("yes");
     }
     // getting a randome number between min and max
     public static double randomNum(double min, double max) {
         return min + Math.random() * (max - min);
     }
-    // removing the double at a spesific index
-    public static double[] removeTheElement(double[] arr, int index) {
-        if (arr == null || index < 0 || index >= arr.length) {
-            return arr;
-        }
-        double[] anotherArray = new double[arr.length - 1];
-        for (int i = 0, k = 0; i < arr.length; i++) {
-            if (i == index) {
-                continue;
-            }
-            anotherArray[k++] = arr[i];
-        }
-        return anotherArray;
-    }
     // taking num to the power of pow
     public static double pow(double num, double pow) {
         double output = 1;
+        boolean negitive = false;
+        if (pow < 0) {
+            negitive = !negitive;
+            pow *= -1;
+        }
         for (int i = 0; i < pow; i++) {
             output *= num;
-        }
+        } 
+        if (negitive) output = 1 / output;
         return output;
     }
     // pythagorean therem
     public static double cultMath(double x, double y) {
-        double output;
-        output = pow(x, 2) + pow(y, 2);
-        output = Math.sqrt(output);
-        return output;
+        return Math.sqrt(pow(x, 2) + pow(y, 2));
     }
     // getting the all the positive and negitive factors of x
     public static double[] getFactor(double x) {
@@ -53,20 +50,20 @@ public class MyMath {
             }
         }
         int count = 0;
-        double[] a = new double[arraylength * 2];
+        double[] arr = new double[arraylength * 2];
         for (int i = 1; i <= x; i++) {
             if (x % i == 0) {
-                a[count] = i;
+                arr[count] = i;
                 count++;
             }
         }
         for (int i = -1; i >= -x; i--) {
             if (x % i == 0) {
-                a[count] = i;
+                arr[count] = i;
                 count++;
             }
         }
-        return a;
+        return arr;
     }
     // uses synthetic substitution to find the imaginaty roots of a function (has to be a quadratic function)
     public static double[] factorOutRoot(double[] input, double[] realRoot, int degree) {
@@ -119,13 +116,14 @@ public class MyMath {
     public static double[] quadFunc(double a, double b, double c) {
         double[] output = new double[2];
         double answer1 = pow(b, 2) + (-4 * a * c);
+        double answer2 = answer1;
         if (answer1 < 0) {
             answer1 = answer1 * -1;
         }
         answer1 = -b + Math.sqrt(answer1);
         answer1 = answer1 / (2 * a);
         output[0] = answer1;
-        double answer2 = pow(b, 2) + (-4 * a * c);
+        
         if (answer2 < 0) {
             answer2 = answer2 * -1;
         }
@@ -134,13 +132,13 @@ public class MyMath {
         output[1] = answer2;
         return output;
     }
-    // rounds to the position specified by percition
+    // rounds to the decimal place specified by percition
     public static double round(double value, int precision) {
         int scale = (int) Math.pow(10, precision);
         return (double) Math.round(value * scale) / scale;
     }
     // rounds double to an int
-    public static int roundToInt(double val) {
+    public static int round(double val) {
         return (int) round(val, 0);
     }
     // clears all the repeat doubles in a int 
@@ -175,6 +173,20 @@ public class MyMath {
         }
         return arr_new;
     }
+    // removing the double at a spesific index
+    public static double[] removeTheElement(double[] arr, int index) {
+            if (arr == null || index < 0 || index >= arr.length) {
+                return arr;
+            }
+            double[] anotherArray = new double[arr.length - 1];
+            for (int i = 0, k = 0; i < arr.length; i++) {
+                if (i == index) {
+                    continue;
+                }
+                anotherArray[k++] = arr[i];
+            }
+            return anotherArray;
+        }
     // checks if there is a hole in a ratonal function
     public static double[] findHole(double[] numerFactors, double[] denomFactors) {
         double[] hole = new double[2];
@@ -283,7 +295,7 @@ public class MyMath {
         }
         return output;
     }
-    // calculates distance of a projectile 
+    // calculates distance and more of a projectile motion
     public static double[] projectileCalc(double Δy, double initialVelocity, double angle, boolean unit) {
         double[] output;
         double gravity = GRAVITY;
@@ -353,29 +365,21 @@ public class MyMath {
     }
     // binary search (does not work that well)
     public static int numberGuess(int min, int max, int guessNum) {
-        int guessingNum = (min + max) / 2;
         int count = 1;
-        //bianary search
-        for (int i = 0; i < max; i++) {
-            if (guessingNum == guessNum) {
-                return i + 1;
-            } else if (guessingNum < guessNum) {
-                if (count % 2 == 0) {
-                    guessingNum += (int) Math.round((double) (guessingNum / 2));
-                } else {
-                    guessingNum += guessingNum / 2;
-                }
-            } else if (guessingNum > guessNum) {
-                if (count % 2 == 0) {
-                    guessingNum -= (int) Math.round((double) (guessingNum / 2));
-                } else {
-                    guessingNum -= guessingNum / 2;
-                }
+        while (min < max) {
+           int mid = (min + max) / 2;
+            if (mid == guessNum) {
+                return count;
+            } else if (mid < guessNum) {
+                min = mid;
+            } else if (mid > guessNum) {
+                max = mid;
             }
-        }
+            count++;
+        }   
         return -1;
     }
-    // gets all the forces acting on the x axis of a object
+    // gets all the forces acting on the x axis of a object USELES Worse vertion of sumVectors()
     public static double[][] getSumOfFX(Vector[] myVectors) {
         int xcount = 0;
         int ycount = 0;
@@ -455,7 +459,7 @@ public class MyMath {
             return output;
         }
     }
-    // gets all the forces acting on the y axis of a object
+    // gets all the forces acting on the y axis of a object USLES Worse vertion of sumVectors()s
     public static double[][] getSumOfFY(Vector[] myVectors) {
         //  almost the same as the getSumOfFX() 
         int xcount = 0;
@@ -518,44 +522,87 @@ public class MyMath {
             return output;
         }
     }
-    // solves for net force and gets data to make a vector
-    public static double[] solveForAcceleration(Vector[] myVectors, double mass) {
+    // breaks apart the vectors into their components
+    public static ArrayList<Vector> sumVectors(ArrayList<Vector> myVectors) {
+        ArrayList<Vector> output = new ArrayList<Vector>();
+        for(int i = myVectors.size()-1; i > 0; i--) {
+            if (round(myVectors.get(i).getAngle()) == 0 || round(myVectors.get(i).getAngle()) ==180 || round(myVectors.get(i).getAngle()) == 360) {
+                output.add(myVectors.get(i));
+                myVectors.remove(i);
+            } else if (round(myVectors.get(i).getAngle()) == 90 || round(myVectors.get(i).getAngle()) == 270 ) {
+                output.add(myVectors.get(i));
+                myVectors.remove(i);
+            }
+        }
+        if (myVectors.size() == 0) {
+            return output;
+        } else {
+            for(int i = myVectors.size()-1; i > 0; i--) {
+                int angleX = 0;
+                int angleY = 270;
+                if(round(myVectors.get(i).getMagnitude() * Math.cos(Math.toRadians(myVectors.get(i).getAngle()))) < 0) {
+                    angleX = 180;
+                } 
+                Vector xVector = new Vector(myVectors.get(i).getMagnitude()*Math.cos(Math.toRadians(myVectors.get(i).getAngle())), angleX, myVectors.get(i).getType() + "X");
+                if (myVectors.get(i).getMagnitude() * Math.cos(Math.toRadians(myVectors.get(i).getAngle())) < 0) {
+                    angleY = 90;
+                }
+                Vector yVector = new Vector(myVectors.get(i).getMagnitude()*Math.sin(Math.toRadians(myVectors.get(i).getAngle())), angleY, myVectors.get(i).getType() + "Y");
+                myVectors.remove(i);
+                output.add(xVector);
+                output.add(yVector);
+            }
+            return output;
+        }        
+    }
+    // takes the sum of all the vectors and solves for the final 
+    public static double[] solveAcceleration(ArrayList<Vector> myVectors, double mass) {
         double[] output = new double[4];
-        double[][] xVectors = getSumOfFX(myVectors);
-        double[][] yVectors = getSumOfFY(myVectors);
-        // x acceleration 
-        double[][] realXVectorVal = new double[xVectors.length][2];
-        for(int i = 0; i < xVectors.length; i++) {
-            if (xVectors[i][1] == 180.0) {
-                realXVectorVal[i][0] = (-1 * xVectors[i][0]);
+        ArrayList<Vector> xArrayList = new ArrayList<Vector>();
+        ArrayList<Vector> yArrayList = new ArrayList<Vector>();
+        for(int i = 0; i < myVectors.size(); i++) {
+            if (myVectors.get(i).getAngle() == 90 || myVectors.get(i).getAngle() == 270 ) {
+                yArrayList.add(myVectors.get(i));
             } else {
-                realXVectorVal[i][0] = xVectors[i][0];
-            }
-        } 
-        double xAcceleration = 0;
-        for (int i = 0; i < realXVectorVal.length; i++) {
-            xAcceleration += realXVectorVal[i][0];
+                xArrayList.add(myVectors.get(i));
+            }            
         }
-        // y acceleraion 
-        double[][] realYVectorVal = new double[yVectors.length][2];
-        for(int i = 0; i < yVectors.length; i++) {
-            if (yVectors[i][1] == 90.0) {
-                realYVectorVal[i][0] = (-1*yVectors[i][0]);
-            } else {
-                realYVectorVal[i][0] = yVectors[i][0];
-            }
-        } 
-        double yAcceleration = 0;
-        for (int i = 0; i < realYVectorVal.length; i++) {
-            yAcceleration += realYVectorVal[i][0];
+        // sum of x forces
+        double xSum = 0;
+        for(int i = 0; i < xArrayList.size(); i++) {
+            xSum += xArrayList.get(i).getMagnitude() * Math.cos(Math.toRadians(xArrayList.get(i).getAngle()));
         }
-        yAcceleration = round(yAcceleration/mass, 1);
-        xAcceleration = round((xAcceleration / mass), 1);
-        output[0] = xAcceleration;
-        output[1] = yAcceleration;
-        output[2] = round(cultMath(xAcceleration, yAcceleration), 1); // magnitude
-        output[3] = round(Math.abs(Math.toDegrees(Math.atan(Math.abs(yAcceleration)/Math.abs(xAcceleration)))), 1); // angle
+        xSum = round(xSum / mass, 1);
+        // sum of y forces
+        double ySum = 0;
+        for(int i = 0; i < yArrayList.size(); i++) {
+            ySum += yArrayList.get(i).getMagnitude() * Math.sin(Math.toRadians(yArrayList.get(i).getAngle()));
+        }
+        ySum = round(ySum / mass, 1);
+        output[0] = xSum;
+        output[1] = ySum;
+        output[2] = round(cultMath(xSum, ySum), 1); // magnitude 
+        output[3] = round(Math.toDegrees(Math.atan(Math.abs(ySum)/Math.abs(xSum))), 1); // angle 
         return output;
     }
-    
+    // solves for orbital period (orbits)
+    public static double calcPeriod(double M, double r) {
+        return Math.sqrt((4 * pow(Math.PI, 2) * pow(r, 3)) / (G * M));
+    }
+    // solves the velocity of a orbiting body (orbits)
+    public static double calcVelocity(double r, double M) {
+        return G * M / r;
+    }
+    // solves for mass of heviest body (orbits)
+    public static double calcMass(double r, double T) {
+        return (4 * pow(Math.PI, 2) * pow(r, 3)) / (G * pow(T, 2));
+    }
+    // solves for radius (orbits)
+    public static double calcRadius(double T, double M) {
+        return Math.cbrt((G * M * pow(T, 2)) / 4 * pow(Math.PI, 2));
+    }
+    // solve for force of gravity (orbits) 
+    public static double calcGravForce(double M, double r) {
+        return G * M / pow(r, 2); 
+    }
 }

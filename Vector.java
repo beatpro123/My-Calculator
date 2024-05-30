@@ -1,4 +1,3 @@
-
 public class Vector {
     private double magnitude;
     private double angle;
@@ -11,6 +10,7 @@ public class Vector {
     public static final int INITIAL = SIZE / 2;
     private static final int CONST = 5;
 
+    // constructors
     public Vector(double magnitude, double angle, String type) {
         this.magnitude = MyMath.round(magnitude, 1);
         this.angle = 360 - MyMath.round(angle, 1);
@@ -27,14 +27,13 @@ public class Vector {
         fx = calcPos()[0];
         fy = calcPos()[1];
     }
-
     // accsessors 
     public double getAngle() {
-        return MyMath.roundToInt(angle);
+        return MyMath.round(angle);
     }
 
     public double getMagnitude() {
-        return MyMath.roundToInt(magnitude);
+        return MyMath.round(magnitude);
     }
 
     public String getType() {
@@ -117,18 +116,17 @@ public class Vector {
         if (magnitude == 0) {
             return output;
         }
-        int angle1 = (MyMath.roundToInt(angle)-225);
+        int angle1 = (MyMath.round(angle)-225);
         if (angle1 < 0) {
             angle1 = 360 + angle1;
         }
-        int angle2 = (MyMath.roundToInt(angle)+225) % 360;
+        int angle2 = (MyMath.round(angle)+225) % 360;
         // calculating the point for the first arrow head
-        output[0][0] = fx + CONST * MyMath.roundToInt(Math.cos(Math.toRadians(angle1)));
-        output[0][1] = fy + CONST * MyMath.roundToInt(Math.sin(Math.toRadians(angle1)));
+        output[0][0] = fx + CONST * MyMath.round(Math.cos(Math.toRadians(angle1)));
+        output[0][1] = fy + CONST * MyMath.round(Math.sin(Math.toRadians(angle1)));
         // calculating the point for the second arrow head 
-        output[1][0] = fx + CONST * MyMath.roundToInt(Math.cos(Math.toRadians(angle2)));
-        output[1][1] = fy + CONST * MyMath.roundToInt(Math.sin(Math.toRadians(angle2)));
+        output[1][0] = fx + CONST * MyMath.round(Math.cos(Math.toRadians(angle2)));
+        output[1][1] = fy + CONST * MyMath.round(Math.sin(Math.toRadians(angle2)));
         return output;
     }
-
 } 

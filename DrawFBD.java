@@ -4,12 +4,14 @@ import javax.swing.JFrame;
 import java.awt.Color;
 import java.lang.Math;
 import java.util.Scanner;
+import java.util.ArrayList;
 
 public class DrawFBD extends Canvas{
     public static final Scanner input = new Scanner(System.in);
     public static final int SIZE = 600;
     public static final double GRAVITY = MyMath.GRAVITY;
     public static final String[] FORCETYPES = {"Normal", "Applyed", "Friction", "Tension"};
+
     public static void drawFBD() {
         JFrame frame = new JFrame("FBD");
         Canvas canvas = new DrawFBD();
@@ -191,13 +193,15 @@ public class DrawFBD extends Canvas{
         int forceOrAcceleration = input.nextInt();
         System.out.println("What is the mass of the object? (Kg)");
         double mass = input.nextDouble();
+        // creats the Gravity vector
         Vector gravity = new Vector(mass * (-GRAVITY), 270, "Gravity");
         int fyg = gravity.calcPos()[1];        
         g.drawLine(ix, iy, ix, fyg);
+        // gets arrow pos and draws it
         int gravityHeads[][] = gravity.calcArrowHead();       
         g.drawLine(ix, fyg, gravityHeads[0][0], gravityHeads[0][1]);
         g.drawLine(ix, fyg, gravityHeads[1][0], gravityHeads[1][1]);
-        g.drawString(gravity.getType() + " " + MyMath.roundToInt(gravity.getMagnitude()) + " N", gravity.calcAvePos(ix, fyg)[0], gravity.calcAvePos(ix, fyg)[1]);
+        g.drawString(gravity.getType() + " " + MyMath.round(gravity.getMagnitude()) + " N", gravity.calcAvePos(ix, fyg)[0], gravity.calcAvePos(ix, fyg)[1]);
         System.out.println("How many vectors? (not incluging gravity)");
         int numOfVectors = input.nextInt();
         Vector[] vectorValues = new Vector[numOfVectors+1];
@@ -222,19 +226,24 @@ public class DrawFBD extends Canvas{
                 }
             }
             int whatForce = input.nextInt() - 1;
+            // creats the new vector
             Vector tempVector = new Vector(magnitude, Math.toDegrees(angle), FORCETYPES[whatForce]);
             int xpos = tempVector.getEndPos()[0];
             int ypos = tempVector.getEndPos()[1];
             g.drawLine(ix, iy, xpos, ypos);
+            // gets the pos of arrow heads and draws them
             int[][] heads = tempVector.calcArrowHead();
-
             g.drawLine(xpos, ypos, heads[0][0], heads[0][1]);
             g.drawLine(xpos, ypos, heads[1][0], heads[1][1]);
             g.drawString(tempVector.getType() + " " + tempVector.getMagnitude() + " N", tempVector.calcAvePos(xpos, ypos)[0], tempVector.calcAvePos(xpos, ypos)[1]);
             count++;
             vectorValues[count] = tempVector; 
         } 
-        double[] acceleration = MyMath.solveForAcceleration(vectorValues, mass);
+        ArrayList<Vector> myVectors = new ArrayList<Vector>();
+        for (int i = 0; i < vectorValues.length; i++) { 
+            myVectors.add(vectorValues[i]);
+        }
+        double[] acceleration = MyMath.solveAcceleration(myVectors, mass);
         String prefrence = "";
         if (forceOrAcceleration == 2) {
             prefrence = "Acceleration";

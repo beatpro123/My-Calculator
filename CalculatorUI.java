@@ -7,7 +7,7 @@ public class CalculatorUI {
     // public static double[] dividen = {1.0, 0.0, -4.0}; 
     // public static double[] devisor = {1.0, -5.0};
     // public static double[][] testVector = {{98.1, 90}, {50, 45}, {100, 0}, {200, 300}} ;
-    // public static 
+    // public static
     // public static
     // public static
     public static void main(String[] args) {
@@ -31,14 +31,9 @@ public class CalculatorUI {
             System.out.println("That is not a option!\n");
             userInterface();
         }
-        if (userNum == 1) {
-            PreCalc.preCalcInterface();
-        }
-        if (userNum == 2) {
-            Physics.physisicsInterface();
-        }
-        if (userNum == 3) {
-            Games.gameUI();
-        }
+        if (userNum == 1) PreCalc.preCalcInterface();
+        if (userNum == 2) Physics.physisicsInterface();
+        if (userNum == 3) Games.gameUI();
+        
     }
 }

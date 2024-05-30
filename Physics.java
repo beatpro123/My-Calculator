@@ -40,8 +40,9 @@ public class Physics {
         System.out.println("(0) Return home");
         System.out.println("(1) Projectile motion");
         System.out.println("(2) FBD's (Under Constuction)");
+        System.out.println("(3) Planet calculations");
         userNum = input.nextInt();
-        if (userNum < 0 || userNum > 3) {
+        if (userNum < 0 || userNum > 4) {
             System.out.println("That is not a option or it is currently being worked on");
             physisicsInterface();
         }
@@ -49,12 +50,9 @@ public class Physics {
             System.out.println();
             CalculatorUI.userInterface();
         }
-        if (userNum == 1) {
-            projectileMotionDistance();
-        }
-        if (userNum == 2) {
-            uiFBDS();
-        }
+        if (userNum == 1) projectileMotionDistance();
+        if (userNum == 2) uiFBDS();
+        if (userNum == 3) planetUi();
     }
 
     public static void projectileMotionDistance() {
@@ -95,8 +93,7 @@ public class Physics {
         }
         phyCheck();
     }
-
-
+    
     public static void uiFBDS() {
         // add unit check if neccisary 
         System.out.println("\nWhat are you solving for?");
@@ -106,18 +103,27 @@ public class Physics {
             System.out.println("That is not a option or it is currently being worked on");
             uiFBDS();
         }
-        if (solveFor == 1) { // just draw FBD wile solving for acceleration
-            DrawFBD.drawFBD();
-        }
-        if (solveFor == 2) {
+        if (solveFor == 1) DrawFBD.drawFBD(); // just draw FBD wile solving for acceleration
+    }
 
+    public static void planetUi() {
+        System.out.println("What are you trying to solve?");
+        System.out.println("(0) return to physic selection");
+        System.out.println("(1) Solve for the velicity");
+        System.out.println("(2) Solve for the orbital period");
+        System.out.println("(3) Solve for the central bodies mass");
+        System.out.println("(4) Solve for the radius of the planet");
+        int solveFor = input.nextInt();
+        if (solveFor < 0 || solveFor > 4) {
+            System.out.println("That is not a option");
+            planetUi();
         }
-        if (solveFor == 3) {
-            
-        }
-        if (solveFor == 4) {
+        if (solveFor == 0) physisicsInterface();
+        if (solveFor == 1) Planetary_Math.solveVelocity();
+        if (solveFor == 2) Planetary_Math.solvePeriod();
+        if (solveFor == 3) Planetary_Math.solveMass();
+        if (solveFor == 4) Planetary_Math.solveRadius();
 
-        }
     }
     
 }

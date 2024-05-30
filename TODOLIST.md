@@ -5,7 +5,7 @@
 #        2. factoring 
 #            ex: (x+1)(x-3) = x^2-2x-3 (can be expandable)
 #        3. create a program to calculate and draw FBD's (I want this to be the best designed function)
-#            a) arrows DONE
+#            a) Arrows DONE
 #               Draws arrow and labels them based on the type of force (also scale maginitude bassed on #N)
 #                   can do this by making gravity half the canvis and divide mag by that number 
 #               Make it show the value and type of the vector. 

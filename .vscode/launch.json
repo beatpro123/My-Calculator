@@ -6,6 +6,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "CalculatorUI",
+            "request": "launch",
+            "mainClass": "CalculatorUI",
+            "projectName": "My Calculator_6db8d11e"
+        },
+        {
+            "type": "java",
             "name": "temp",
             "request": "launch",
             "mainClass": "temp",
