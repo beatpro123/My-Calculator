@@ -4,7 +4,6 @@ import javax.swing.JFrame;
 import java.awt.Color;
 import java.lang.Math;
 import java.util.Scanner;
-import java.awt.event.KeyEvent;
 
 public class DrawFBD extends Canvas{
     public static final Scanner input = new Scanner(System.in);
@@ -183,19 +182,22 @@ public class DrawFBD extends Canvas{
         return output;
     }
 
-    public void paint(Graphics g) { // TODO make the labels for the vctors 
+    public void paint(Graphics g) {
+        // making the center poind for the FBD
         int ix = (SIZE/2), iy = (SIZE/2);
         int count = 0;
         g.fillOval((ix-5), (iy-5), 10, 10);
+        System.out.println("(1) Net force \n(2) Net acceleration ");
+        int forceOrAcceleration = input.nextInt();
         System.out.println("What is the mass of the object? (Kg)");
         double mass = input.nextDouble();
-        int fyg = iy + (int) Math.round(mass*-GRAVITY);
+        Vector gravity = new Vector(mass * (-GRAVITY), 270, "Gravity");
+        int fyg = gravity.calcPos()[1];        
         g.drawLine(ix, iy, ix, fyg);
-        int[][] gravityHeads = MyMath.newArrowHead(0, ix, ix, fyg, iy);
-        Vector gravity = new Vector(fyg - iy, 90, "Gravity");
+        int gravityHeads[][] = gravity.calcArrowHead();       
         g.drawLine(ix, fyg, gravityHeads[0][0], gravityHeads[0][1]);
         g.drawLine(ix, fyg, gravityHeads[1][0], gravityHeads[1][1]);
-        g.drawString(gravity.getType() + " " + gravity.getMagnitude() + " N", gravity.calcAvePos(ix, fyg)[0], gravity.calcAvePos(ix, fyg)[1]);
+        g.drawString(gravity.getType() + " " + MyMath.roundToInt(gravity.getMagnitude()) + " N", gravity.calcAvePos(ix, fyg)[0], gravity.calcAvePos(ix, fyg)[1]);
         System.out.println("How many vectors? (not incluging gravity)");
         int numOfVectors = input.nextInt();
         Vector[] vectorValues = new Vector[numOfVectors+1];
@@ -205,7 +207,11 @@ public class DrawFBD extends Canvas{
             System.out.println("what is the magnitude?");
             double magnitude = input.nextDouble();
             System.out.println("what is the angle?");
-            double angle = Math.toRadians(input.nextInt());
+            double angle = input.nextInt();
+            if (angle == 0) {
+                angle = 360;
+            }
+            angle = Math.toRadians(angle % 360);
             System.out.println("What is the type of force?");
             for(int i = 0; i < FORCETYPES.length; i++) {
                 System.out.print("(" + (i+1) + ") " + FORCETYPES[i]); 
@@ -217,11 +223,11 @@ public class DrawFBD extends Canvas{
             }
             int whatForce = input.nextInt() - 1;
             Vector tempVector = new Vector(magnitude, Math.toDegrees(angle), FORCETYPES[whatForce]);
-            int[] vecPos = tempVector.calcPos();
-            int xpos = vecPos[0], ypos = vecPos[1];
-            double slope = (double)(iy-ypos) /(double) (ix-xpos);
+            int xpos = tempVector.getEndPos()[0];
+            int ypos = tempVector.getEndPos()[1];
             g.drawLine(ix, iy, xpos, ypos);
-            int[][] heads = MyMath.newArrowHead(slope, xpos, ix, ypos, iy);
+            int[][] heads = tempVector.calcArrowHead();
+
             g.drawLine(xpos, ypos, heads[0][0], heads[0][1]);
             g.drawLine(xpos, ypos, heads[1][0], heads[1][1]);
             g.drawString(tempVector.getType() + " " + tempVector.getMagnitude() + " N", tempVector.calcAvePos(xpos, ypos)[0], tempVector.calcAvePos(xpos, ypos)[1]);
@@ -229,18 +235,27 @@ public class DrawFBD extends Canvas{
             vectorValues[count] = tempVector; 
         } 
         double[] acceleration = MyMath.solveForAcceleration(vectorValues, mass);
-        System.out.println("X-acceleration = " + acceleration[0] + " M/S^2, Y-accleration = " + acceleration[1] + " M/S^2." +
-        "\nAccleration = " + acceleration[2] + " M/S^2, with an angle of " + acceleration[3]);
+        String prefrence = "";
+        if (forceOrAcceleration == 2) {
+            prefrence = "Acceleration";
+            System.out.println("X-acceleration = " + acceleration[0] + " M/S^2, Y-accleration = " + acceleration[1] + " M/S^2." +
+            "\nAccleration = " + acceleration[2] + " M/S^2, with an angle of " + (360-acceleration[3]) % 360);
+        } else {
+            prefrence = "Force";
+            System.out.println("X-Force = " + (acceleration[0]*mass)+ " N, Y-Force = " + (acceleration[1]*mass) + " N." +
+            "\nNet-Force = " + (acceleration[2]*mass) + " N, with an angle of " + (360-acceleration[3]) % 360);
+        }
         if (MyMath.round(acceleration[2], 0) != 0.0) {
-            Vector finalAccleration = new Vector(acceleration[2] * mass, acceleration[3], "Accleration", acceleration[2]);
+            Vector finalAccleration = new Vector(acceleration[2] * mass, acceleration[3], "Net-"+prefrence, acceleration[2]);
             g.setColor(Color.red);
-            g.drawLine(ix, iy, finalAccleration.calcPos()[0], finalAccleration.calcPos()[1]);
-            double aSlope = (double)(iy-finalAccleration.calcPos()[1]) /(double) (ix-finalAccleration.calcPos()[0]);
-            int[][] accelerationHeads = MyMath.newArrowHead(aSlope, finalAccleration.calcPos()[0], ix, finalAccleration.calcPos()[1], iy);
-            g.drawLine(finalAccleration.calcPos()[0], finalAccleration.calcPos()[1], accelerationHeads[0][0], accelerationHeads[0][1]);
-            g.drawLine(finalAccleration.calcPos()[0], finalAccleration.calcPos()[1], accelerationHeads[1][0], accelerationHeads[1][1]);
-            g.drawString(finalAccleration.getType() + " " + finalAccleration.getMagnitude() + " N " + finalAccleration.getAcclerarion() + " M/S^2" , finalAccleration.calcAvePos(finalAccleration.calcPos()[0],
-            finalAccleration.calcPos()[1])[0], finalAccleration.calcAvePos(finalAccleration.calcPos()[0], finalAccleration.calcPos()[1])[1]);
+            int accelX = finalAccleration.calcPos()[0], accelY = finalAccleration.calcPos()[1];
+            g.drawLine(ix, iy, accelX, accelY);
+            int[][] accelerationHeads = finalAccleration.calcArrowHead();
+            g.drawLine(accelX, accelY, accelerationHeads[0][0], accelerationHeads[0][1]);
+            g.drawLine(accelX, accelY, accelerationHeads[1][0], accelerationHeads[1][1]);
+            g.drawString(finalAccleration.getType() + " " + finalAccleration.getMagnitude() + " N " + 
+            finalAccleration.getAcclerarion() + " M/S^2" , finalAccleration.calcAvePos(accelX, accelY)[0], 
+            finalAccleration.calcAvePos(accelX, accelY)[1]);
         }
         Physics.phyCheck();
     }

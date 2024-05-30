@@ -1,5 +1,4 @@
 import java.util.Scanner;
-import java.util.Vector;
 
 public class CalculatorUI {
     public static final Scanner input = new Scanner(System.in);
@@ -7,16 +6,16 @@ public class CalculatorUI {
     // add test cases here: 
     // public static double[] dividen = {1.0, 0.0, -4.0}; 
     // public static double[] devisor = {1.0, -5.0};
-     public static double[][] testVector = {{98.1, 90}, {50, 45}, {100, 0}, {200, 300}} ;
+    // public static double[][] testVector = {{98.1, 90}, {50, 45}, {100, 0}, {200, 300}} ;
     // public static 
     // public static
     // public static
     public static void main(String[] args) {
         System.out.print("\n\033[H\033[2J");
         System.out.flush();
-        //userInterface();
+        userInterface();
         //Physics.uiFBDS();
-        DrawFBD.drawFBD();
+        //DrawFBD.drawFBD();
     }
 
     public static void userInterface() {

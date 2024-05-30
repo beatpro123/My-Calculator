@@ -25,7 +25,7 @@
 #        4. draw the projectile motion path and lable the key points                       
 #               
 #
-#
+#        5. make find the roots of a polynomial show if imaginary roots 
 #
 #
 #

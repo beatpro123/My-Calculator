@@ -94,7 +94,7 @@ public class PreCalc {
             System.out.print(ALPABET.charAt(i%26) + " = ");
             function[i] = input.nextInt();
         }
-        double[] theRoots = MyMath.findFactor(function, degree);
+        Root[] theRoots = MyMath.findFactor(function, degree);
        for (int i = 0; i < theRoots.length; i++) {
         System.out.println("your root is: " + theRoots[i]);
        }
@@ -142,8 +142,16 @@ public class PreCalc {
         }
         System.out.println("\nWhat is k?");
         int k = input.nextInt();
-        double[] numerFactors = MyMath.findFactor(funcOfNumer, numerDegree);
-        double[] denomFactors = MyMath.findFactor(funcOfDenom, denomDegree);
+        Root[] tempNumerFactors = MyMath.findFactor(funcOfNumer, numerDegree);
+        double[] numerFactors = new double[tempNumerFactors.length];
+        for (int i = 0; i < numerFactors.length; i++) {
+            numerFactors[i] = tempNumerFactors[i].getRootNum();
+        } 
+        Root[] tempDenomFactors = MyMath.findFactor(funcOfDenom, denomDegree);
+        double[] denomFactors = new double[tempDenomFactors.length];
+        for (int i = 0; i < denomFactors.length; i++) {
+            denomFactors[i] = tempDenomFactors[i].getRootNum();
+        } 
         System.out.println("\n\n");
         if (MyMath.checkOverlap(numerFactors, denomFactors) == true) {
             double[] hole = MyMath.findHole(numerFactors, denomFactors);

@@ -1,7 +1,5 @@
 import java.lang.Math;
 
-import javax.transaction.xa.Xid;
-
 public class MyMath {
     public static final double GRAVITY = -9.81;
     public static final double INFINITY = Double.POSITIVE_INFINITY;
@@ -206,18 +204,17 @@ public class MyMath {
         return false;
     }
     // finds all the real and 2 imaginary roots if applicable 
-    public static double[] findFactor(double[] realInput, int degree) {
+    public static Root[] findFactor(double[] realInput, int degree) {
         int numPossibleRoots = 0;
         int rootCount = 0;
-        double[] roots = new double[degree - 1];
         double[] input;
-        if (degree == 0) {
-            return realInput;
-        }
+        Root[] roots = new Root[degree-1];
         double[] factorsOfFirst = getFactor(realInput[0]);
         // finding x = 0 roots TODO make check for multiple
         if (realInput[realInput.length - 1] == 0) {
-            realInput[realInput.length - 1] = roots[rootCount];
+            //realInput[realInput.length - 1] = roots[rootCount];
+            Root temp = new Root(realInput[realInput.length - 1]);
+            roots[rootCount] = temp;
             input = removeTheElement(realInput, realInput.length - 1);
             degree--;
             numPossibleRoots++;
@@ -242,21 +239,28 @@ public class MyMath {
                 root += input[j] * MyMath.pow(possibleRoots[i], (degree - (1 + j)));
             }
             if (root == 0) {
-                roots[rootCount] = possibleRoots[i];
+                Root temp = new Root(possibleRoots[i]);
+                roots[rootCount] = temp;
                 rootCount++;
                 numPossibleRoots++;
             }
         }
         // solving for 2 imaginary roots
         if ((degree - 1) - numPossibleRoots == 2) {
-            double[] imagenaryFunction = factorOutRoot(input, roots, degree);
+            double[] tempRoots = new double[roots.length-2];
+            for (int i = 0; i < tempRoots.length; i++) {
+                tempRoots[i] = roots[i].getRootNum();
+            }
+            double[] imagenaryFunction = factorOutRoot(input, tempRoots, degree);
             Double a, b, c;
             a = imagenaryFunction[0];
             b = imagenaryFunction[1];
             c = imagenaryFunction[2];
             double[] imagenaryRoots = quadFunc(a, b, c);
             for (int i = 0; i < imagenaryRoots.length; i++) {
-                roots[rootCount] = imagenaryRoots[i];
+                //roots[rootCount] = imagenaryRoots[i];
+                Root imagin = new Root(imagenaryRoots[i], true);
+                roots[rootCount] = imagin;
                 rootCount++;
             }
         }
@@ -345,74 +349,6 @@ public class MyMath {
         }
         placeHolder[last] = inputFunc[last];
         output[1] = placeHolder[1] / devFunc[0];
-        return output;
-    }
-    // calculating the positon of the 
-    public static int[][] newArrowHead(double slope, int fx, int ix, int fy, int iy) {
-        //     \quad 4/
-        //      \    /
-        //       \  /
-        // quad 3 \/ quad 1
-        //        /\
-        //       /  \
-        //      /    \
-        //     /quad 2\
-        // [n][0] = x, [n][1] = y
-        if (slope == INFINITY) {
-            slope = 0;
-        }
-        int[][] output = new int[2][2];
-        if (slope == 1 || slope == -1) {
-            if (fx > ix) {
-                if (fy < iy) { // (+x -y)
-                    output[0][0] = fx - 5;
-                    output[0][1] = fy;
-                    output[1][0] = fx;
-                    output[1][1] = fy + 5;
-                } else { // (+x +y) done
-                    output[0][0] = fx;
-                    output[0][1] = fy - 5;
-                    output[1][0] = fx - 5;
-                    output[1][1] = fy;
-                }
-            } else {
-                if (fy < iy) { // (-x -y) done
-                    output[0][0] = fx + 5;
-                    output[0][1] = fy;
-                    output[1][0] = fx;
-                    output[1][1] = fy + 5;
-                } else { // (-x +y)
-                    output[0][0] = fx;
-                    output[0][1] = fy - 5;
-                    output[1][0] = fx + 5;
-                    output[1][1] = fy;
-                }
-            }
-        } else if (-1 > slope || slope < 1 || (slope == 0.0 && ix == fx )) {
-            if (iy > fy) { // quad 4
-                output[0][0] = fx - 5;
-                output[0][1] = fy + 5;
-                output[1][0] = fx + 5;
-                output[1][1] = fy + 5;
-            } else { // quad 2
-                output[0][0] = fx - 5;
-                output[0][1] = fy - 5;
-                output[1][0] = fx + 5;
-                output[1][1] = fy - 5;
-            }
-        } else if (-1 < slope && slope < 1 || (slope == 0.0 && iy == fy) ) {
-            if (fx > ix) { // quad 1
-                output[0][0] = fx - 5;
-                output[0][1] = fy - 5;
-                output[1][0] = fx - 5;
-                output[1][1] = fy + 5;
-            } else { // quad 3
-                output[0][0] = fx + 5;
-                output[0][1] = fy - 5;
-                output[1][0] = fx + 5;
-                output[1][1] = fy + 5;
-            }
-        }
         return output;
     }
     // binary search (does not work that well)
